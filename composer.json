@@ -1,0 +1,42 @@
+{
+  "name": "webfactor/:package_name",
+  "description": ":package_description",
+  "keywords": [
+    "webfactor",
+    ":package_name"
+  ],
+  "homepage": "https://github.com/webfactor/:package_name",
+  "license": "MIT",
+  "require": {
+    "php": "^7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Webfactor\\Package\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Webfactor\\Package\\Test\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Webfactor\\Package\\PackageServiceProvider"
+      ],
+      "aliases": {
+        "Package": "Webfactor\\Package\\PackageFacade"
+      }
+    }
+  }
+}
