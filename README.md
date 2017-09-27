@@ -35,7 +35,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 composer test
 ```
 
-## About webfactor
+## About webfactor media GmbH
 
 webfactor media GmbH is a developer agency for web and apps based in Würzburg, Germany. 
 
