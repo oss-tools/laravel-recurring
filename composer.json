@@ -1,0 +1,42 @@
+{
+  "name": "blessingdube/laravel-recurring",
+  "description": "Package for adding recurring functionality to laravel models.",
+  "keywords": [
+    "blessingdube",
+    "laravel-recurring"
+  ],
+  "homepage": "https://github.com/blessingdube/laravel-recurring",
+  "license": "MIT",
+  "require": {
+    "php": "^7.1.3",
+    "illuminate/database": "^5.8 || ^6.0 || ^7.0",
+    "illuminate/support": "^5.8 || ^6.0 || ^7.0",
+    "nesbot/carbon": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5 || ^8.4 || ^9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "BlessingDube\\Recurring\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "BlessingDube\\Recurring\\Test\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor\\bin\\phpunit"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "BlessingDube\\Recurring\\Providers\\RecurringServiceProvider"
+      ]
+    }
+  }
+}
