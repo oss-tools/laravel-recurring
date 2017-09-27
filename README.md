@@ -1,9 +1,9 @@
 # Very short description of the package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/:package_name.svg?style=flat-square)](https://packagist.org/packages/webfactor/:package_name)
-[![Build Status](https://img.shields.io/travis/spatie/:package_name/master.svg?style=flat-square)](https://travis-ci.org/spatie/:package_name)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/webfactor/:package_name.svg?style=flat-square)](https://packagist.org/packages/webfactor/:package_name)
+[![Build Status](https://img.shields.io/travis/webfactor/:package_name/master.svg?style=flat-square)](https://travis-ci.org/webfactor/:package_name)
 [![StyleCI](https://styleci.io/repos/123456/shield?branch=master)](https://styleci.io/repos/123456)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/:package_name.svg?style=flat-square)](https://packagist.org/packages/spatie/:package_name)
+[![Total Downloads](https://img.shields.io/packagist/dt/webfactor/:package_name.svg?style=flat-square)](https://packagist.org/packages/webfactor/:package_name)
 
 **Note:** Replace ```:author_name``` ```:author_username``` ```:author_email``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), and [composer.json](composer.json) files, then delete this line.
 
