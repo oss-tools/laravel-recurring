@@ -8,7 +8,7 @@
   "homepage": "https://github.com/blessingdube/laravel-recurring",
   "license": "MIT",
   "require": {
-    "php": "^7.1",
+    "php": "^7.2.5",
     "illuminate/database": "^7.0",
     "nesbot/carbon": "^2.17"
   },
