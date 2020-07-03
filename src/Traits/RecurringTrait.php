@@ -23,7 +23,12 @@ trait RecurringTrait
         if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
         }
+
         $method = 'addWeek';
+
+        if (strtolower($frequency) === 'daily') {
+            $method = 'addDay';
+        }
 
         if (strtolower($frequency) === 'monthly') {
             $method = 'addMonth';
@@ -59,8 +64,6 @@ trait RecurringTrait
                 'end_date' => $date[1]
             ];
         })->toArray();
-
-        die($dates);
 
         return $this->recurring()->createMany($dates);
     }
