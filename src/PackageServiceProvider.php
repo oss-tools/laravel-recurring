@@ -1,10 +1,10 @@
 <?php
 
-namespace Webfactor\Package;
+namespace BlessingDube\Recurring;
 
 use Illuminate\Support\ServiceProvider;
 
-class PackageServiceProvider extends ServiceProvider
+class RecurringServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -12,17 +12,11 @@ class PackageServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../config/package.php' => config_path('package.php'),
-            ], 'config');
-
-            /*
-            $this->loadViewsFrom(__DIR__.'/../resources/views', 'package');
-
-            $this->publishes([
-                __DIR__.'/../resources/views' => base_path('resources/views/vendor/package'),
-            ], 'views');
-            */
+            if (!class_exists('CreateRecurringTable')) {
+                $timestamp = date('Y_m_d_His', time());
+                $this->publishes([__DIR__.'/../database/migrations/create_recurring_table.php' => database_path('migrations/'.$timestamp.'_create_opening_hours_tables.php')], 'migrations');
+            }
+            $this->publishes([__DIR__.'/../config/laravel-recurring.php' => config_path('laravel-recurring.php')], 'config');
         }
     }
 
@@ -31,6 +25,6 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'package');
+        //
     }
 }
