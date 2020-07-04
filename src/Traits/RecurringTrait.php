@@ -5,20 +5,39 @@ namespace BlessingDube\Recurring\Traits;
 use BlessingDube\Recurring\Models\Recurring;
 use Carbon\Carbon;
 use BlessingDube\Recurring\Exceptions\UnknownFrequencyException;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Trait RecurringTrait
+ * @package BlessingDube\Recurring\Traits
+ */
 trait RecurringTrait
 {
-    public function isRecurring()
+    /**
+     * @return bool
+     */
+    public function getIsRecurringAttribute()
     {
         return $this->recurring()->count() > 0;
     }
 
+    /**
+     * @return mixed
+     */
     public function recurring()
     {
-        return $this->morphMany(Recurring::class, 'recurring_id');
+        return $this->morphMany(Recurring::class, 'recurring');
     }
 
-    public function recur(string $start, string $end, string $until, string $frequency = 'weekly')
+    /**
+     * @param  string  $start
+     * @param  string  $finish
+     * @param  string  $until
+     * @param  string  $frequency
+     * @return mixed
+     * @throws UnknownFrequencyException
+     */
+    public function recur(string $start, string $finish, string $until, string $frequency = 'weekly')
     {
         if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
@@ -39,23 +58,26 @@ trait RecurringTrait
         }
 
         $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $start);
-        $endDate = Carbon::createFromFormat('Y-m-d H:i:s', $end);
+        $finishDate = Carbon::createFromFormat('Y-m-d H:i:s', $finish);
         $untilDate = Carbon::createFromFormat('Y-m-d H:i:s', $until);
 
         $datesBetween = collect([
-            [$startDate->format('Y-m-d H:i:s'), $endDate->format('Y-m-d H:i:s')]
+            [$startDate->format('Y-m-d H:i:s'), $finishDate->format('Y-m-d H:i:s')]
         ]);
 
         $currentStartDate = $startDate;
-        $currentEndDate = $endDate;
+        $currentEndDate = $finishDate;
 
         while ($currentStartDate->greaterThan($untilDate)) {
-            $datesBetween->add([$currentStartDate = $currentStartDate->{$method}, $currentEndDate = $currentEndDate->{$method}]);
+            $datesBetween->add([
+                $currentStartDate = $currentStartDate->{$method},
+                $currentEndDate = $currentEndDate->{$method}
+            ]);
         }
 
         $differenceToEnd = $startDate->diffInDays($until);
         if ($differenceToEnd) {
-            $datesBetween->add([$startDate->addDays($differenceToEnd), $endDate->addDays($differenceToEnd)]);
+            $datesBetween->add([$startDate->addDays($differenceToEnd), $finishDate->addDays($differenceToEnd)]);
         }
 
         $dates = $datesBetween->map(function ($date) {
@@ -66,5 +88,13 @@ trait RecurringTrait
         })->toArray();
 
         return $this->recurring()->createMany($dates);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRecurringAttribute()
+    {
+        return $this->recurring()->get();
     }
 }

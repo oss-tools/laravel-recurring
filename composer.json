@@ -8,8 +8,8 @@
   "homepage": "https://github.com/blessingdube/laravel-recurring",
   "license": "MIT",
   "require": {
-    "php": "^7.2.5",
-    "illuminate/database": "^7.0",
+    "illuminate/database": "^5.0|^6.0|^7.0",
+    "illuminate/support": "^5.0|^6.0|^7.0",
     "nesbot/carbon": "^2.17"
   },
   "require-dev": {
@@ -34,7 +34,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "BlessingDube\\Recurring\\RecurringServiceProvider"
+        "BlessingDube\\Recurring\\Providers\\RecurringServiceProvider"
       ]
     }
   }
