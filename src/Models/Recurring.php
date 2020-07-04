@@ -26,8 +26,8 @@ class Recurring extends Model
      * @var string[]
      */
     protected $casts = [
-        'start_date' => 'date:Y-m-d H:i:s',
-        'end_date' => 'date:Y-m-d H:i:s',
+        'start_date' => 'date:Y-m-d H:i',
+        'end_date' => 'date:Y-m-d H:i',
     ];
 
     /**
