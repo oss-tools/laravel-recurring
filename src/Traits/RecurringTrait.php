@@ -7,8 +7,7 @@ use BlessingDube\Recurring\Models\Recurring;
 use Carbon\Carbon;
 
 /**
- * Trait RecurringTrait
- * @package BlessingDube\Recurring\Traits
+ * Trait RecurringTrait.
  */
 trait RecurringTrait
 {
@@ -48,7 +47,7 @@ trait RecurringTrait
      */
     public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
     {
-        if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
+        if (! in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
         }
 
@@ -80,7 +79,7 @@ trait RecurringTrait
 
         $initialDates = $endDate ? [
             $startDate->format('Y-m-d H:i:s'),
-            $endDate->format('Y-m-d H:i:s')
+            $endDate->format('Y-m-d H:i:s'),
         ] : $initialDates = [$startDate->format('Y-m-d H:i:s')];
 
         $datesBetween = collect([$initialDates]);
@@ -93,7 +92,7 @@ trait RecurringTrait
                 $currentStartDate = $currentStartDate->{$method},
                 $current = $current->{$method},
             ]) : $datesBetween->add([
-                $currentStartDate = $currentStartDate->{$method}
+                $currentStartDate = $currentStartDate->{$method},
             ]);
         }
 
@@ -101,7 +100,7 @@ trait RecurringTrait
         if ($differenceToEnd) {
             $this->endDate && $until ? $datesBetween->add([
                 $startDate->addDays($differenceToEnd),
-                $endDate->addDays($differenceToEnd)
+                $endDate->addDays($differenceToEnd),
             ]) : $datesBetween->add([$startDate->addDays($differenceToEnd)]);
         }
 

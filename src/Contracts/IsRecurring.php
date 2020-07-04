@@ -3,8 +3,7 @@
 namespace BlessingDube\Recurring\Contracts;
 
 /**
- * Interface IsRecurring
- * @package BlessingDube\Recurring\Contracts
+ * Interface IsRecurring.
  */
 interface IsRecurring
 {
