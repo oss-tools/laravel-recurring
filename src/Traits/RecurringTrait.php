@@ -35,7 +35,7 @@ trait RecurringTrait
      */
     public function recurring()
     {
-        return $this->morphMany(Recurring::class, 'recurring',);
+        return $this->morphMany(Recurring::class, 'recurring');
     }
 
     /**
