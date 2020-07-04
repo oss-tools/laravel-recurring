@@ -47,7 +47,7 @@ trait RecurringTrait
      */
     public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
     {
-        if (! in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
+        if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
         }
 
@@ -75,10 +75,11 @@ trait RecurringTrait
             $method = 'addYear';
         }
 
-        $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $start);
-        $endDate = $this->endDate && $until ? Carbon::createFromFormat('Y-m-d H:i:s', $end) : null;
-        $untilDate = $until ? Carbon::createFromFormat('Y-m-d H:i:s', $until) : Carbon::createFromFormat('Y-m-d H:i:s',
-            $end);
+        $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $start.$this->start_date->format('H:i:s'));
+        $endDate = $this->endDate && $until ? Carbon::createFromFormat('Y-m-d H:i:s',
+            $end.$this->end_date->format('H:i:s')) : null;
+        $untilDate = $until ? Carbon::createFromFormat('Y-m-d H:i:s', $until.$this->end_date->format('H:i:s'))
+            : Carbon::createFromFormat('Y-m-d H:i:s', $end.$this->end_date->format('H:i:s'))->format('Y-m-d H:i:s');
 
         $initialDates = $endDate ? [
             $startDate->format('Y-m-d H:i:s'),
@@ -87,24 +88,24 @@ trait RecurringTrait
 
         $datesBetween = collect([$initialDates]);
 
-        $currentStartDate = $startDate;
-        $current = $endDate;
+        $currentStartDate = Carbon::createFromFormat('Y-m-d H:i:s', $startDate);
+        $current = Carbon::createFromFormat('Y-m-d H:i:s', $endDate);
 
-        while ($currentStartDate->greaterThan($untilDate)) {
+        while ($untilDate->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s', $currentStartDate))) {
             $this->endDate && $until ? $datesBetween->add([
-                $currentStartDate = $currentStartDate->{$method},
-                $current = $current->{$method},
+                $currentStartDate = $currentStartDate->{$method}(),
+                $current = $current->{$method}(),
             ]) : $datesBetween->add([
-                $currentStartDate = $currentStartDate->{$method},
+                $currentStartDate = $currentStartDate->{$method}(),
             ]);
         }
 
         $differenceToEnd = $startDate->diffInDays($until);
         if ($differenceToEnd) {
             $this->endDate && $until ? $datesBetween->add([
-                $startDate->addDays($differenceToEnd),
-                $endDate->addDays($differenceToEnd),
-            ]) : $datesBetween->add([$startDate->addDays($differenceToEnd)]);
+                $startDate->addDays($differenceToEnd)->format('Y-m-d H:i:s'),
+                $endDate->addDays($differenceToEnd)->format('Y-m-d H:i:s'),
+            ]) : $datesBetween->add([$startDate->addDays($differenceToEnd)->format('Y-m-d H:i:s')]);
         }
 
         $dates = $datesBetween->map(function ($date) use ($until) {
@@ -133,5 +134,33 @@ trait RecurringTrait
         $this->recurring()->each(function ($r) {
             $r->delete();
         });
+    }
+
+    /**
+     * @param  bool  $asParent
+     * @return mixed
+     */
+    public function next($asParent = false)
+    {
+        $currentDate = Carbon::now()->format('Y-m-d H:i:s');
+
+        $method = $asParent ? 'first' : 'asParent';
+
+        return $this->recurring()->whereDate('start_date', '>=', $currentDate)->orderBy('start_date',
+            'asc')->{$method}();
+    }
+
+    /**
+     * @param  bool  $asParent
+     * @return mixed
+     */
+    public function previous($asParent = false)
+    {
+        $currentDate = Carbon::now()->format('Y-m-d H:i:s');
+
+        $method = $asParent ? 'first' : 'asParent';
+
+        return $this->recurring()->whereDate('start_date', '<=', $currentDate)->orderBy('start_date',
+            'desc')->{$method}();
     }
 }
