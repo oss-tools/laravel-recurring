@@ -48,17 +48,9 @@ class Recurring extends Model
     public function scopeAsParent($query, $options = [])
     {
         if ((count($options) === 1)) {
-            $string = 'recurring.'.$options[0];
-
-            $query = $query->with($string);
+            $query = $query->with($options[0]);
         } elseif (count($options) > 1) {
-            $string = 'recurring';
-
-            foreach ($options as $option) {
-                $string .= '.'.$option;
-            }
-
-            $query = $query->with($string);
+            $query = $query->with($options);
         }
 
         $model = $query->first();

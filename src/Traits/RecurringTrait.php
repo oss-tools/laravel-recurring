@@ -2,10 +2,9 @@
 
 namespace BlessingDube\Recurring\Traits;
 
+use BlessingDube\Recurring\Exceptions\UnknownFrequencyException;
 use BlessingDube\Recurring\Models\Recurring;
 use Carbon\Carbon;
-use BlessingDube\Recurring\Exceptions\UnknownFrequencyException;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Trait RecurringTrait
@@ -13,6 +12,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait RecurringTrait
 {
+    /**
+     * @var string
+     */
+    protected $startDate = 'start_date';
+
+    /**
+     * @var string
+     */
+    protected $endDate = 'end_date';
+
     /**
      * @return bool
      */
@@ -26,21 +35,28 @@ trait RecurringTrait
      */
     public function recurring()
     {
-        return $this->morphMany(Recurring::class, 'recurring');
+        return $this->morphMany(Recurring::class, 'recurring',);
     }
 
     /**
      * @param  string  $start
-     * @param  string  $finish
-     * @param  string  $until
+     * @param  string|null  $end
+     * @param  string|null  $until
      * @param  string  $frequency
      * @return mixed
      * @throws UnknownFrequencyException
      */
-    public function recur(string $start, string $finish, string $until, string $frequency = 'weekly')
+    public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
     {
         if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
+        }
+
+        if (method_exists($this, 'getRecurringOptions')) {
+            $options = $this->getRecurringOptions();
+
+            $this->startDate = $options['start_date'];
+            $this->endDate = $options['end_date'];
         }
 
         $method = 'addWeek';
@@ -58,33 +74,42 @@ trait RecurringTrait
         }
 
         $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $start);
-        $finishDate = Carbon::createFromFormat('Y-m-d H:i:s', $finish);
-        $untilDate = Carbon::createFromFormat('Y-m-d H:i:s', $until);
+        $endDate = $this->endDate && $until ? Carbon::createFromFormat('Y-m-d H:i:s', $end) : null;
+        $untilDate = $until ? Carbon::createFromFormat('Y-m-d H:i:s', $until) : Carbon::createFromFormat('Y-m-d H:i:s',
+            $end);
 
-        $datesBetween = collect([
-            [$startDate->format('Y-m-d H:i:s'), $finishDate->format('Y-m-d H:i:s')]
-        ]);
+        $initialDates = $endDate ? [
+            $startDate->format('Y-m-d H:i:s'),
+            $endDate->format('Y-m-d H:i:s')
+        ] : $initialDates = [$startDate->format('Y-m-d H:i:s')];
+
+        $datesBetween = collect([$initialDates]);
 
         $currentStartDate = $startDate;
-        $currentEndDate = $finishDate;
+        $current = $endDate;
 
         while ($currentStartDate->greaterThan($untilDate)) {
-            $datesBetween->add([
+            $this->endDate && $until ? $datesBetween->add([
                 $currentStartDate = $currentStartDate->{$method},
-                $currentEndDate = $currentEndDate->{$method}
+                $current = $current->{$method},
+            ]) : $datesBetween->add([
+                $currentStartDate = $currentStartDate->{$method}
             ]);
         }
 
         $differenceToEnd = $startDate->diffInDays($until);
         if ($differenceToEnd) {
-            $datesBetween->add([$startDate->addDays($differenceToEnd), $finishDate->addDays($differenceToEnd)]);
+            $this->endDate && $until ? $datesBetween->add([
+                $startDate->addDays($differenceToEnd),
+                $endDate->addDays($differenceToEnd)
+            ]) : $datesBetween->add([$startDate->addDays($differenceToEnd)]);
         }
 
-        $dates = $datesBetween->map(function ($date) {
-            return [
-                'start_date' => $date[0],
-                'end_date' => $date[1]
-            ];
+        $dates = $datesBetween->map(function ($date) use ($until) {
+            return $this->endDate && $until ? [
+                $this->startDate => $date[0],
+                $this->endDate => $date[1],
+            ] : [$this->startDate => $date[0]];
         })->toArray();
 
         return $this->recurring()->createMany($dates);
@@ -96,5 +121,15 @@ trait RecurringTrait
     public function getRecurringAttribute()
     {
         return $this->recurring()->get();
+    }
+
+    /**
+     * Delete all recurrences of the current model.
+     */
+    public function deleteRecurringModels()
+    {
+        $this->recurring()->each(function ($r) {
+            $r->delete();
+        });
     }
 }

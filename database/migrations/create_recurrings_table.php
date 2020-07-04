@@ -16,9 +16,10 @@ class CreateRecurringsTable extends Migration
         Schema::create('recurring', function (Blueprint $table) {
             $table->id();
             $table->dateTime('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();;
             $table->string('recurring_type');
             $table->unsignedBigInteger('recurring_id');
+            $table->unique(['start_date', 'end_date', 'recurring_type', 'recurring_id']);
             $table->timestamps();
             $table->softDeletes();
         });
