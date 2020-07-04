@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Recurring
- * @package BlessingDube\Recurring\Models
+ * Class Recurring.
  */
 class Recurring extends Model
 {
@@ -62,7 +61,7 @@ class Recurring extends Model
      * @param  Recurring|null  $recurring
      * @return array
      */
-    public function formatAsParent(Model $parent = null, Recurring $recurring = null)
+    public function formatAsParent(Model $parent = null, self $recurring = null)
     {
         if (! $parent || ! $recurring) {
             $parent = $this->recurring()->with([
