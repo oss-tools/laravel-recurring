@@ -24,14 +24,15 @@ class RecurringTest extends TestCase
     }
 }
 
-class TestModel extends Model implements IsRecurring {
+class TestModel extends Model implements IsRecurring
+{
     use RecurringTrait;
 
     public function getRecurringOptions()
     {
         return [
             'start_date' => 'starts_at',
-            'end_date' => 'ends_at'
+            'end_date' => 'ends_at',
         ];
     }
 }
