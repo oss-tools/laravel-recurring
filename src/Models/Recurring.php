@@ -23,7 +23,6 @@ class Recurring extends Model
      */
     protected $dates = ['start_date', 'end_date'];
 
-
     /**
      * @var string[]
      */
@@ -65,11 +64,11 @@ class Recurring extends Model
      */
     public function formatAsParent(Model $parent = null, Recurring $recurring = null)
     {
-        if (!$parent || !$recurring) {
+        if (! $parent || ! $recurring) {
             $parent = $this->recurring()->with([
                 'recurring' => function ($r) {
                     $r->where('recurrings.id', self::getKey());
-                }
+                },
             ])->first();
 
             $recurring = $parent->recurring[0];

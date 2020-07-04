@@ -3,10 +3,10 @@
 namespace BlessingDube\Recurring\Contracts;
 
 /**
- * Interface HasRecurrings
+ * Interface IsRecurring
  * @package BlessingDube\Recurring\Contracts
  */
-interface HasRecurrings
+interface IsRecurring
 {
     /**
      * @return mixed

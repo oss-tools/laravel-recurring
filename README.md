@@ -8,21 +8,34 @@
 
 **Note:** Replace ```:author_name``` ```:author_username``` ```:author_email``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), and [composer.json](composer.json) files, then delete this line.
 
-This is where your description should go. Try and limit it to a paragraph or two.
+This package adds a recurring relation to laravel models.
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require webfactor/:package_name
+composer require blessingdube/laravel-recurring
 ```
 
 ## Usage
 
 ``` php
-$package = new Webfactor\Package();
-echo $package->helloWorld();
+use BlessingDube\Recurring\Contracts\IsRecurring;
+use BlessingDube\Recurring\Traits\RecurringTrait;
+
+class Event extends Model implements IsRecurring
+{
+    use RecurringTrait;
+
+    public function getRecurringOptions()
+    {
+        return [
+            'start_date' => 'starts_at',
+            'end_date' => 'ends_at',
+        ];
+    }
+}
 ```
 
 ## Changelog
@@ -34,10 +47,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 ``` bash
 composer test
 ```
-
-## About webfactor media GmbH
-
-webfactor media GmbH is a developer agency for web and apps based in Würzburg, Germany. 
 
 
 ## License
