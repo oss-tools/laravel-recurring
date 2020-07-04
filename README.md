@@ -1,4 +1,4 @@
-# Very short description of the package
+# Recurring relation for Laravel models.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/blessingdube/laravel-recurring.svg?style=flat-square)](https://packagist.org/packages/blessingdube/laravel-recurring)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
