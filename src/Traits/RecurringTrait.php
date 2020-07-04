@@ -47,7 +47,7 @@ trait RecurringTrait
      */
     public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
     {
-        if (! in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
+        if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
         }
 
@@ -56,6 +56,9 @@ trait RecurringTrait
 
             $this->startDate = $options['start_date'];
             $this->endDate = $options['end_date'];
+        } elseif (($configStartDate = config('laravel-recurring.default_start_date')) || ($configEndDate = config('laravel-recurring.default_end_date'))) {
+            $this->startDate = $configStartDate;
+            $this->endDate = $configEndDate;
         }
 
         $method = 'addWeek';
