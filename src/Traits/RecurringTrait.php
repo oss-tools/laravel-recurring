@@ -47,7 +47,7 @@ trait RecurringTrait
      */
     public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
     {
-        if (!in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
+        if (! in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
         }
 
