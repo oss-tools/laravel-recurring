@@ -6,6 +6,8 @@
 [![StyleCI](https://styleci.io/repos/276990480/shield?branch=master)](https://styleci.io/repos/276990480)
 [![Total Downloads](https://img.shields.io/packagist/dt/blessingdube/laravel-recurring.svg?style=flat-square)](https://packagist.org/packages/blessingdube/laravel-recurring)
 
+**Note:** This package is still in active development so breaking changes may be applied before v1 is released. Please proceed with caution.
+
 This package adds a recurring relation to laravel models.
 
 ## Installation
