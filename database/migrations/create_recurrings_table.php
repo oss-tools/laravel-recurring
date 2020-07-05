@@ -19,7 +19,7 @@ class CreateRecurringsTable extends Migration
             $table->date('end_date')->nullable();
             $table->string('recurring_type');
             $table->unsignedBigInteger('recurring_id');
-            $table->unique(['start_date', 'end_date', 'recurring_type', 'recurring_id']);
+            $table->unique(['start_date', 'end_date', 'recurring_type', 'recurring_id'], 'start_end_recurring_foreign');
             $table->timestamps();
             $table->softDeletes();
         });
