@@ -13,7 +13,7 @@ class CreateRecurringsTable extends Migration
      */
     public function up()
     {
-        Schema::create('recurring', function (Blueprint $table) {
+        Schema::create('recurrings', function (Blueprint $table) {
             $table->id();
             $table->dateTime('start_date');
             $table->date('end_date')->nullable();
