@@ -20,9 +20,6 @@ class RecurringServiceProvider extends ServiceProvider
 
             $this->publishes([__DIR__.'/../../config/laravel-recurring.php' => config_path('laravel-recurring.php')],
                 'config');
-
-            $this->loadMigrationsFrom(__DIR__.
-                '/../../database/migrations');
         }
     }
 
