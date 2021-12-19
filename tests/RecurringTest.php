@@ -2,10 +2,10 @@
 
 namespace OSSTools\Recurring\Test;
 
+use Illuminate\Database\Eloquent\Model;
 use OSSTools\Recurring\Contracts\IsRecurring;
 use OSSTools\Recurring\Traits\RecurringTrait;
 use PHPUnit\Framework\TestCase;
-use Illuminate\Database\Eloquent\Model;
 
 class RecurringTest extends TestCase
 {

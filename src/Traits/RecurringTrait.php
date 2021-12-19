@@ -2,9 +2,9 @@
 
 namespace OSSTools\Recurring\Traits;
 
+use Carbon\Carbon;
 use OSSTools\Recurring\Exceptions\UnknownFrequencyException;
 use OSSTools\Recurring\Models\Recurring;
-use Carbon\Carbon;
 
 /**
  * Trait RecurringTrait.
@@ -77,8 +77,10 @@ trait RecurringTrait
         }
 
         $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $start.$this->start_date->format('H:i:s'));
-        $endDate = $this->endDate && $until ? Carbon::createFromFormat('Y-m-d H:i:s',
-            $end.$this->end_date->format('H:i:s')) : null;
+        $endDate = $this->endDate && $until ? Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            $end.$this->end_date->format('H:i:s')
+        ) : null;
         $untilDate = $until ? Carbon::createFromFormat('Y-m-d H:i:s', $until.$this->end_date->format('H:i:s'))
             : Carbon::createFromFormat('Y-m-d H:i:s', $end.$this->end_date->format('H:i:s'))->format('Y-m-d H:i:s');
 
@@ -147,8 +149,10 @@ trait RecurringTrait
 
         $method = $asParent ? 'first' : 'asParent';
 
-        return $this->recurring()->whereDate('start_date', '>=', $currentDate)->orderBy('start_date',
-            'asc')->{$method}();
+        return $this->recurring()->whereDate('start_date', '>=', $currentDate)->orderBy(
+            'start_date',
+            'asc'
+        )->{$method}();
     }
 
     /**
@@ -161,7 +165,9 @@ trait RecurringTrait
 
         $method = $asParent ? 'first' : 'asParent';
 
-        return $this->recurring()->whereDate('start_date', '<=', $currentDate)->orderBy('start_date',
-            'desc')->{$method}();
+        return $this->recurring()->whereDate('start_date', '<=', $currentDate)->orderBy(
+            'start_date',
+            'desc'
+        )->{$method}();
     }
 }

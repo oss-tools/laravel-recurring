@@ -14,8 +14,10 @@ class RecurringServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             if (! class_exists('CreateRecurringsTable')) {
                 $timestamp = date('Y_m_d_His', time());
-                $this->publishes([__DIR__.'/../../database/migrations/create_recurrings_table.php' => database_path('migrations/'.$timestamp.'_create_recurrings_table.php')],
-                    'migrations');
+                $this->publishes(
+                    [__DIR__.'/../../database/migrations/create_recurrings_table.php' => database_path('migrations/'.$timestamp.'_create_recurrings_table.php')],
+                    'migrations'
+                );
             }
         }
     }
