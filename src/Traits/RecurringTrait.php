@@ -43,6 +43,7 @@ trait RecurringTrait
      * @param  string|null  $until
      * @param  string  $frequency
      * @return mixed
+     *
      * @throws UnknownFrequencyException
      */
     public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
