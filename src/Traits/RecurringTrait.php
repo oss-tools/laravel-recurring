@@ -1,9 +1,9 @@
 <?php
 
-namespace BlessingDube\Recurring\Traits;
+namespace OSSTools\Recurring\Traits;
 
-use BlessingDube\Recurring\Exceptions\UnknownFrequencyException;
-use BlessingDube\Recurring\Models\Recurring;
+use OSSTools\Recurring\Exceptions\UnknownFrequencyException;
+use OSSTools\Recurring\Models\Recurring;
 use Carbon\Carbon;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace BlessingDube\Recurring\Models;
+namespace OSSTools\Recurring\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

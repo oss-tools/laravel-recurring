@@ -1,6 +1,6 @@
 <?php
 
-namespace BlessingDube\Recurring\Exceptions;
+namespace OSSTools\Recurring\Exceptions;
 
 use Exception;
 use Throwable;

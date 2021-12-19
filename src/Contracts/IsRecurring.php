@@ -1,6 +1,6 @@
 <?php
 
-namespace BlessingDube\Recurring\Contracts;
+namespace OSSTools\Recurring\Contracts;
 
 /**
  * Interface IsRecurring.

@@ -1,6 +1,6 @@
 <?php
 
-namespace BlessingDube\Recurring\Providers;
+namespace OSSTools\Recurring\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

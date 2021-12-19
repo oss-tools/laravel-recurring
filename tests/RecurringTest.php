@@ -1,9 +1,9 @@
 <?php
 
-namespace BlessingDube\Recurring\Test;
+namespace OSSTools\Recurring\Test;
 
-use BlessingDube\Recurring\Contracts\IsRecurring;
-use BlessingDube\Recurring\Traits\RecurringTrait;
+use OSSTools\Recurring\Contracts\IsRecurring;
+use OSSTools\Recurring\Traits\RecurringTrait;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Database\Eloquent\Model;
 
