@@ -14,6 +14,7 @@
     "nesbot/carbon": "^2.0"
   },
   "require-dev": {
+    "orchestra/testbench": "^6.0",
     "phpunit/phpunit": "^7.5 || ^8.4 || ^9.0"
   },
   "autoload": {

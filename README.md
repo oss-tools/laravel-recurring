@@ -2,8 +2,8 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/oss-tools/laravel-recurring.svg?style=flat-square)](https://packagist.org/packages/oss-tools/laravel-recurring)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/oss-tools/laravel-recurring/master.svg?style=flat-square)](https://travis-ci.org/oss-tools/laravel-recurring)
-[![StyleCI](https://styleci.io/repos/276990480/shield?branch=master)](https://styleci.io/repos/276990480)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oss-tools/laravel-recurring/run-tests?label=tests)
+![Check & fix styling](https://github.com/oss-tools/laravel-recurring/workflows/Check%20&%20fix%20styling/badge.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/oss-tools/laravel-recurring.svg?style=flat-square)](https://packagist.org/packages/oss-tools/laravel-recurring)
 
 **Note:** This package is still in active development so breaking changes may be applied before v1 is released. Please proceed with caution.
