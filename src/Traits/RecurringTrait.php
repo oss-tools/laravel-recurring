@@ -3,10 +3,10 @@
 namespace OSSTools\Recurring\Traits;
 
 use Carbon\Carbon;
-use OSSTools\Recurring\Exceptions\UnknownFrequencyException;
-use OSSTools\Recurring\Models\Recurring;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use OSSTools\Recurring\Exceptions\UnknownFrequencyException;
+use OSSTools\Recurring\Models\Recurring;
 
 /**
  * Trait RecurringTrait.
@@ -112,8 +112,10 @@ trait RecurringTrait
         $timeFormat = 'H:i:s';
 
         $startDate = Carbon::createFromFormat(self::$recurringDateFormat, $start.$this->start_date->format($timeFormat));
-        $endDate = $this->endDate && $until ? Carbon::createFromFormat(self::$recurringDateFormat,
-            $end.$this->end_date->format($timeFormat)) : null;
+        $endDate = $this->endDate && $until ? Carbon::createFromFormat(
+            self::$recurringDateFormat,
+            $end.$this->end_date->format($timeFormat)
+        ) : null;
         $untilDate = $until ? Carbon::createFromFormat(self::$recurringDateFormat, $until.$this->end_date->format($timeFormat))
             : Carbon::createFromFormat(self::$recurringDateFormat, $end.$this->end_date->format($timeFormat))->format(self::$recurringDateFormat);
 
