@@ -1,6 +1,6 @@
 # Recurring relation for Laravel models.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/oss-tools/laravel-recurring.svg?style=flat-square)](https://packagist.org/packages/oss-tools/laravel-recurring)
+[![Latest Version](https://img.shields.io/github/release/oss-tools/laravel-recurring.svg?style=flat-square)](https://github.com/oss-tools/laravel-recurring/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/oss-tools/laravel-recurring/run-tests?label=tests)
 ![Check & fix styling](https://github.com/oss-tools/laravel-recurring/workflows/Check%20&%20fix%20styling/badge.svg)
@@ -37,10 +37,6 @@ class Event extends Model implements IsRecurring
     }
 }
 ```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Testing
 

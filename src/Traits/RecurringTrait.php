@@ -5,6 +5,8 @@ namespace OSSTools\Recurring\Traits;
 use Carbon\Carbon;
 use OSSTools\Recurring\Exceptions\UnknownFrequencyException;
 use OSSTools\Recurring\Models\Recurring;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Trait RecurringTrait.
@@ -22,9 +24,37 @@ trait RecurringTrait
     protected $endDate = 'end_date';
 
     /**
+     * @var bool
+     */
+    protected $cascadeOnDelete = false;
+
+    /**
+     * @var string
+     */
+    protected static $recurringDateFormat = 'Y-m-d H:i:s';
+
+    /**
+     * @return void
+     */
+    protected static function bootRecurringTrait(): void
+    {
+        static::deleting(function ($model) {
+            if ($this->cascadeOnDelete) {
+                if (method_exists($model, 'isForceDeleting') && $model->isForceDeleting()) {
+                    $this->recurring()->forceDelete();
+
+                    return;
+                }
+
+                $this->recurring()->delete();
+            }
+        });
+    }
+
+    /**
      * @return bool
      */
-    public function getIsRecurringAttribute()
+    public function getIsRecurringAttribute(): bool
     {
         return $this->recurring()->count() > 0;
     }
@@ -32,7 +62,7 @@ trait RecurringTrait
     /**
      * @return mixed
      */
-    public function recurring()
+    public function recurring(): MorphMany
     {
         return $this->morphMany(Recurring::class, 'recurring');
     }
@@ -42,11 +72,10 @@ trait RecurringTrait
      * @param  string|null  $end
      * @param  string|null  $until
      * @param  string  $frequency
-     * @return mixed
-     *
+     * @return Collection
      * @throws UnknownFrequencyException
      */
-    public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly')
+    public function recur(string $start, string $end = null, string $until = null, string $frequency = 'weekly'): Collection
     {
         if (! in_array($frequency, ['daily', 'weekly', 'monthly', 'yearly'])) {
             throw new UnknownFrequencyException('The chosen frequency is unknown', 422);
@@ -57,9 +86,13 @@ trait RecurringTrait
 
             $this->startDate = $options['start_date'];
             $this->endDate = $options['end_date'];
-        } elseif (($configStartDate = config('laravel-recurring.default_start_date')) || ($configEndDate = config('laravel-recurring.default_end_date'))) {
-            $this->startDate = $configStartDate;
-            $this->endDate = $configEndDate;
+        } else {
+            $configStartDate = config('laravel-recurring.default_start_date');
+            $configEndDate = config('laravel-recurring.default_end_date');
+            if ($configStartDate || $configEndDate) {
+                $this->startDate = $configStartDate;
+                $this->endDate = $configEndDate;
+            }
         }
 
         $method = 'addWeek';
@@ -76,25 +109,25 @@ trait RecurringTrait
             $method = 'addYear';
         }
 
-        $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $start.$this->start_date->format('H:i:s'));
-        $endDate = $this->endDate && $until ? Carbon::createFromFormat(
-            'Y-m-d H:i:s',
-            $end.$this->end_date->format('H:i:s')
-        ) : null;
-        $untilDate = $until ? Carbon::createFromFormat('Y-m-d H:i:s', $until.$this->end_date->format('H:i:s'))
-            : Carbon::createFromFormat('Y-m-d H:i:s', $end.$this->end_date->format('H:i:s'))->format('Y-m-d H:i:s');
+        $timeFormat = 'H:i:s';
+
+        $startDate = Carbon::createFromFormat(self::$recurringDateFormat, $start.$this->start_date->format($timeFormat));
+        $endDate = $this->endDate && $until ? Carbon::createFromFormat(self::$recurringDateFormat,
+            $end.$this->end_date->format($timeFormat)) : null;
+        $untilDate = $until ? Carbon::createFromFormat(self::$recurringDateFormat, $until.$this->end_date->format($timeFormat))
+            : Carbon::createFromFormat(self::$recurringDateFormat, $end.$this->end_date->format($timeFormat))->format(self::$recurringDateFormat);
 
         $initialDates = $endDate ? [
-            $startDate->format('Y-m-d H:i:s'),
-            $endDate->format('Y-m-d H:i:s'),
-        ] : $initialDates = [$startDate->format('Y-m-d H:i:s')];
+            $startDate->format(self::$recurringDateFormat),
+            $endDate->format(self::$recurringDateFormat),
+        ] : [$startDate->format(self::$recurringDateFormat)];
 
         $datesBetween = collect([$initialDates]);
 
-        $currentStartDate = Carbon::createFromFormat('Y-m-d H:i:s', $startDate);
-        $current = Carbon::createFromFormat('Y-m-d H:i:s', $endDate);
+        $currentStartDate = Carbon::createFromFormat(self::$recurringDateFormat, $startDate);
+        $current = Carbon::createFromFormat(self::$recurringDateFormat, $endDate);
 
-        while ($untilDate->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s', $currentStartDate))) {
+        while ($untilDate->greaterThan(Carbon::createFromFormat(self::$recurringDateFormat, $currentStartDate))) {
             $this->endDate && $until ? $datesBetween->add([
                 $currentStartDate = $currentStartDate->{$method}(),
                 $current = $current->{$method}(),
@@ -106,9 +139,9 @@ trait RecurringTrait
         $differenceToEnd = $startDate->diffInDays($until);
         if ($differenceToEnd) {
             $this->endDate && $until ? $datesBetween->add([
-                $startDate->addDays($differenceToEnd)->format('Y-m-d H:i:s'),
-                $endDate->addDays($differenceToEnd)->format('Y-m-d H:i:s'),
-            ]) : $datesBetween->add([$startDate->addDays($differenceToEnd)->format('Y-m-d H:i:s')]);
+                $startDate->addDays($differenceToEnd)->format(self::$recurringDateFormat),
+                $endDate->addDays($differenceToEnd)->format(self::$recurringDateFormat),
+            ]) : $datesBetween->add([$startDate->addDays($differenceToEnd)->format(self::$recurringDateFormat)]);
         }
 
         $dates = $datesBetween->map(function ($date) use ($until) {
@@ -122,30 +155,43 @@ trait RecurringTrait
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getRecurringAttribute()
+    public function getRecurringAttribute(): Collection
     {
         return $this->recurring()->get();
     }
 
     /**
      * Delete all recurrences of the current model.
+     * @param bool $forceDelete
+     * @return bool
      */
-    public function deleteRecurringModels()
+    public function deleteRecurringModels(bool $forceDelete = false): bool
     {
-        $this->recurring()->each(function ($r) {
-            $r->delete();
-        });
+        $method = $forceDelete ? 'forceDelete' : 'delete';
+        if ($recurringModels = $this->recurring()->withTrashed()->get()) {
+            $failures = false;
+            $recurringModels->each(function ($model) use ($method, &$failures) {
+                $success = $model->{$method};
+                if (! $success) {
+                    $failures = true;
+                }
+            });
+
+            return $failures === false;
+        }
+
+        return true;
     }
 
     /**
      * @param  bool  $asParent
      * @return mixed
      */
-    public function next($asParent = false)
+    public function next(bool $asParent = false)
     {
-        $currentDate = Carbon::now()->format('Y-m-d H:i:s');
+        $currentDate = Carbon::now()->format(self::$recurringDateFormat);
 
         $method = $asParent ? 'first' : 'asParent';
 
@@ -159,9 +205,9 @@ trait RecurringTrait
      * @param  bool  $asParent
      * @return mixed
      */
-    public function previous($asParent = false)
+    public function previous(bool $asParent = false)
     {
-        $currentDate = Carbon::now()->format('Y-m-d H:i:s');
+        $currentDate = Carbon::now()->format(self::$recurringDateFormat);
 
         $method = $asParent ? 'first' : 'asParent';
 
