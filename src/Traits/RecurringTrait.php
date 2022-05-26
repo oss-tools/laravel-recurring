@@ -29,6 +29,11 @@ trait RecurringTrait
     protected $cascadeOnDelete = false;
 
     /**
+     * @var bool
+     */
+    protected $cascadeOnRestore = false;
+
+    /**
      * @var string
      */
     protected static $recurringDateFormat = 'Y-m-d H:i:s';
@@ -47,6 +52,12 @@ trait RecurringTrait
                 }
 
                 $this->recurring()->delete();
+            }
+        });
+
+        static::restoring(function ($model) {
+            if ($this->cascadeOnRestore) {
+                $this->recurring()->withTrashed()->restore();
             }
         });
     }

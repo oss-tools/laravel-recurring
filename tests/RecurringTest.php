@@ -3,6 +3,7 @@
 namespace OSSTools\Recurring\Test;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OSSTools\Recurring\Contracts\IsRecurring;
 use OSSTools\Recurring\Traits\RecurringTrait;
 use PHPUnit\Framework\TestCase;
@@ -27,6 +28,7 @@ class RecurringTest extends TestCase
 class TestModel extends Model implements IsRecurring
 {
     use RecurringTrait;
+    use SoftDeletes;
 
     public function getRecurringOptions()
     {
